@@ -26,5 +26,5 @@ exports.updateBlog = async (id, { title, content }) => {
 };
 
 exports.deleteBlog = async (id) => {
-	return BlogModel.deleteOne({ id });
+	return await BlogModel.deleteOne({ id });
 };
