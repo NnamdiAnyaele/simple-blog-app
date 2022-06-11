@@ -4,6 +4,10 @@ const BlogSchema = new mongoose.Schema(
 	{
 		title: String,
 		content: String,
+		author: {
+			type: String,
+			required: true,
+		},
 	},
 	{ timestamps: true }
 );

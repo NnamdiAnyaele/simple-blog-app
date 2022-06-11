@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const blogService = require("../service/blog");
 const apiResponse = require("../utils/apiResponse");
+const { verifyToken } = require("../middleware/auth");
 
-router.post("/blog", async (req, res, next) => {
+router.post("/blogs", verifyToken, async (req, res, next) => {
 	try {
 		const data = req.body;
-		console.log("I ran");
-		const blog = await blogService.create(data);
+		const { user } = req;
+		const blog = await blogService.create({ data, author: user.username });
 
 		return apiResponse(res, 201, "Blog created successfully", blog);
 	} catch (error) {
@@ -15,7 +16,7 @@ router.post("/blog", async (req, res, next) => {
 	}
 });
 
-router.get("/blog/:id", async (req, res, next) => {
+router.get("/blogs/:id", async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const blog = await blogService.findById(id);
@@ -25,7 +26,7 @@ router.get("/blog/:id", async (req, res, next) => {
 		next(error);
 	}
 });
-router.get("/blog", async (req, res, next) => {
+router.get("/blogs", async (req, res, next) => {
 	try {
 		const blogs = await blogService.getAllBlogs();
 
@@ -35,21 +36,22 @@ router.get("/blog", async (req, res, next) => {
 	}
 });
 
-router.put("/blog/:id", async (req, res, next) => {
+router.put("/blogs/:id", async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const data = req.body;
-		const blog = await blogService.updateBlog(id, data);
+		const { user } = req;
+		const blog = await blogService.updateBlog(id, data, user.username);
 		return apiResponse(res, 200, "Blogs updated successfully", blog);
 	} catch (error) {
 		next(error);
 	}
 });
 
-router.delete("/blog/:id", async (req, res, next) => {
+router.delete("/blogs/:id", async (req, res, next) => {
 	const { id } = req.params;
 	try {
-		const blog = await blogService.deleteBlog(id);
+		const blog = await blogService.deleteBlog(id, user.username);
 		return apiResponse(res, 200, "Blog deleted successfully", blog);
 	} catch (error) {
 		next(error);

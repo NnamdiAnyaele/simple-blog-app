@@ -38,7 +38,7 @@ exports.getAllBlogs = async () => {
 	}
 };
 
-exports.updateBlog = async (id, { title, content }) => {
+exports.updateBlog = async (id, { title, content }, author) => {
 	try {
 		if (!id) {
 			throw new ErrorResponse("Id must be provided", 400);
@@ -46,7 +46,7 @@ exports.updateBlog = async (id, { title, content }) => {
 		if (!title || !content) {
 			throw new ErrorResponse("Title and content are required", 400);
 		}
-		const blog = await blogRepo.updateBlog(id, { title, content });
+		const blog = await blogRepo.updateBlog(id, { title, content }, author);
 
 		return blog;
 	} catch (error) {
@@ -54,12 +54,12 @@ exports.updateBlog = async (id, { title, content }) => {
 	}
 };
 
-exports.deleteBlog = async (id) => {
+exports.deleteBlog = async (id, author) => {
 	try {
 		if (!id) {
 			throw new ErrorResponse("Id must be provided", 400);
 		}
-		const blog = await blogRepo.deleteBlog(id);
+		const blog = await blogRepo.deleteBlog(id, author);
 		return blog;
 	} catch (error) {
 		throw error;
